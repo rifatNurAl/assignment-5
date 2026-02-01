@@ -24,6 +24,6 @@ app.use("/doc", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 // app.use('/data', data);
 app.use("/login", login);
-app.use("/data", verifyToken, data);
+app.use("/data", data);
 app.use("/", index);
 export default app;
