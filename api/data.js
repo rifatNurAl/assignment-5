@@ -9,7 +9,7 @@ router.get("/", async (req, res) => {
 });
 
 
-router.get("/procedure", async (req, res) => {
+router.get("/procedure-test", async (req, res) => {
   try {
     const result = await runProcedure();
     return res.json(result);
