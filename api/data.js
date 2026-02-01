@@ -1,9 +1,19 @@
 import { Router } from "express";
-import { getAllData, getDataById, addData } from "../db/db.js";
+import { getAllData, getDataById, addData, runProcedure } from "../db/db.js";
 let router = Router();
 
 router.get("/", async (req, res) => {
   res.json(await getAllData());
+});
+
+
+router.get("/procedure", async (req, res) => {
+  try {
+    const result = await runProcedure();
+    return res.json(result);
+  } catch (err) {
+    return res.status(500).json({ error: "Procedure error" });
+  }
 });
 
 //get by id

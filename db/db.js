@@ -20,6 +20,16 @@ const execute = async (sql, params = []) => {
   }
 };
 
+const runProcedure = async () => {
+  try {
+    const [rows] = await query("CALL GetUserData()");
+    return rows[0];
+  } catch (err) {
+    console.error("Error in runProcedure:", err);
+    throw err;
+  }
+};
+
 const findUser = async (username) =>
   query("SELECT * FROM users WHERE username = ?", [username]);
 
@@ -55,6 +65,7 @@ export {
   logonUsers,
   updateData,
   deleteData,
+  runProcedure,
 };
 
 /*
