@@ -1,5 +1,7 @@
 import { Router } from "express";
 import { getAllData, getDataById, addData, runProcedure } from "../db/db.js";
+
+
 let router = Router();
 
 router.get("/", async (req, res) => {
