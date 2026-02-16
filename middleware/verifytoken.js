@@ -1,36 +1,33 @@
 import jwt from "jsonwebtoken";
-import dotenv from "dotenv";
-import { logonUsers } from "../db/db.js";
-dotenv.config();
+import "dotenv/config";
 
 const secret = process.env.MY_SECRET_KEY;
 
-// middleware/verifyToken
-export const verifyToken = (req, res, next) => {
-  if (req.method === "OPTIONS") {
-    return res.sendStatus(200);
-  }
+if (!secret) {
+  throw new Error("Secret key not defined");
+}
 
-  const authHeader = req.header("Authorization");
+export default function verifyToken(req, res, next) {
+  const authHeader = req.headers["authorization"];
 
-  if (!authHeader?.toLowerCase().startsWith("bearer ")) {
+  if (!authHeader) {
     return res.status(401).json({ error: "Unauthorized" });
   }
 
-  const token = authHeader.split(" ")[1];
+  const parts = authHeader.split(" ");
+
+  if (parts.length !== 2 || parts[0] !== "Bearer") {
+    return res.status(401).json({ error: "Unauthorized" });
+  }
+
+  const token = parts[1];
 
   try {
-    const decodedToken = jwt.verify(token, secret, {
-      algorithms: ["HS256"],
-    });
-
-    const user = logonUsers.get(decodedToken.username);
-
-    if (!user || user.token !== token) {
-      return res.status(401).json({ error: "Unauthorized" });
-    }
+    const decoded = jwt.verify(token, secret);
+    req.user = decoded;
     next();
   } catch (err) {
     return res.status(401).json({ error: "Unauthorized" });
   }
-};
+}
+

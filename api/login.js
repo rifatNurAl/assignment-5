@@ -1,7 +1,8 @@
 import { Router } from "express";
 import jwt from "jsonwebtoken";
 import "dotenv/config";
-import { logonUsers, findUser } from "../db/db.js";
+import { logonUsers, findUser } from "../mongodb.js";
+
 
 let router = Router();
 const secret = process.env.MY_SECRET_KEY;
@@ -18,7 +19,7 @@ router.post("/", async (req, res) => {
 
   let [user] = await findUser(username);
 
-  if (!user && user.password === password) {
+  if (!user || user.password !== password) {
     return res.status(401).json({ error: "Login failed" });
   }
 

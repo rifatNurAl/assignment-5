@@ -1,15 +1,16 @@
 import { Router } from "express";
-import { getAllData, getDataById, addData, runProcedure } from "../db/db.js";
+import { getAllData, getDataById, addData, runProcedure,updateData,deleteData} from "../mongodb.js";
+import verifyToken from "../middleware/verifytoken.js";
 
 
 let router = Router();
 
-router.get("/", async (req, res) => {
+router.get("/",verifyToken, async (req, res) => {
   res.json(await getAllData());
 });
 
 
-router.get("/procedure-test", async (req, res) => {
+router.get("/procedure-test",verifyToken, async (req, res) => {
   try {
     const result = await runProcedure();
     return res.json(result);
@@ -19,7 +20,7 @@ router.get("/procedure-test", async (req, res) => {
 });
 
 //get by id
-router.get("/:id", async (req, res) => {
+router.get("/:id",verifyToken, async (req, res) => {
   try {
     const result = await getDataById(req.params.id);
     if (result.length === 0)
@@ -32,7 +33,7 @@ router.get("/:id", async (req, res) => {
 });
 
 //post
-router.post("/", async (req, res) => {
+router.post("/",verifyToken, async (req, res) => {
   try {
     const [exist] = await getDataById(req.body.id);
     if (exist) return res.status(409).json({ error: "record already exists" });
@@ -47,7 +48,7 @@ router.post("/", async (req, res) => {
 });
 
 // update
-router.put("/:id", async (req, res) => {
+router.put("/:id",verifyToken, async (req, res) => {
   try {
     const [exist] = await getDataById(req.params.id);
     if (!exist) return res.status(404).json({ error: "record not found" });
@@ -62,7 +63,7 @@ router.put("/:id", async (req, res) => {
 });
 
 //delete
-router.delete("/:id", async (req, res) => {
+router.delete("/:id",verifyToken, async (req, res) => {
   try {
     const [exist] = await getDataById(req.params.id);
     if (!exist) return res.status(404).json({ error: "record not found" });

@@ -1,5 +1,5 @@
 import express from "express";
-import { verifyToken } from "./middleware/verifytoken.js";
+import  verifyToken from "./middleware/verifytoken.js";
 import cors from "cors";
 import swaggerUi from "swagger-ui-express";
 import YAML from "yamljs";
